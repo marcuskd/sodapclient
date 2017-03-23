@@ -3,7 +3,7 @@ Test class for Parser class.
 '''
 
 import unittest
-from ..Parser import Parser
+from sodapclient.Parser import Parser
 
 class TestParser(unittest.TestCase):
 

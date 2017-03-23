@@ -3,7 +3,7 @@ Test class for DDSParser class.
 '''
 
 import unittest
-from ..DDSParser import DDSParser
+from sodapclient.DDSParser import DDSParser
 
 class TestDDSParser(unittest.TestCase):
 

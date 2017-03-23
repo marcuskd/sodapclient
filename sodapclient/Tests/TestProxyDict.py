@@ -1,6 +1,6 @@
 import unittest
 from os import remove
-from ..ProxyDict import ProxyDict
+from sodapclient.ProxyDict import ProxyDict
 
 class TestProxyDict(unittest.TestCase):
 

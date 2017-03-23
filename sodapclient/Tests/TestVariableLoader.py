@@ -3,7 +3,7 @@ Test class for Parser class.
 '''
 
 import unittest
-from ..VariableLoader import VariableLoader
+from sodapclient.VariableLoader import VariableLoader
 import numpy
 
 class TestVariableLoader(unittest.TestCase):

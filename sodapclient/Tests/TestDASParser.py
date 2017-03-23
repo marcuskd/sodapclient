@@ -3,7 +3,7 @@ Test class for DASParser class.
 '''
 
 import unittest
-from ..DASParser import DASParser
+from sodapclient.DASParser import DASParser
 
 class TestDASParser(unittest.TestCase):
 
