@@ -1,3 +1,6 @@
+'''Parser class definition'''
+
+
 class Parser:
 
     '''
@@ -6,61 +9,68 @@ class Parser:
 
     def __init__(self):
 
-        self.Type = 'Undefined'; # Name of parsed dataset (e.g. DDS, DAS)
-        self.Data = {} # Data dictionary
-        self.indts = [] # Indentation list
-        self.dataLines = [] # List of lines in data to be parsed
-        self.lnum = 0 # Current line number
-        self.Finished = False # Flag to indicate parsing complete
+        self.dtype = 'Undefined'  # Name of parsed dataset (e.g. DDS, DAS)
+        self.data = {}  # data dictionary
+        self.indts = []  # Indentation list
+        self.data_lines = []  # List of lines in data to be parsed
+        self.lnum = 0  # Current line number
+        self.finished = False  # Flag to indicate parsing complete
 
-    def FindStart(self,DataStr,StartStr):
+    def find_start(self, data_str, start_str):
 
         # Remove any empty lines
-        tempLines = DataStr.split('\n')
+        tempLines = data_str.split('\n')
         for l in tempLines:
-            if len(l) > 0: self.dataLines.append(l)
+            if len(l) > 0:
+                self.data_lines.append(l)
 
         # Loop to find start of dataset
-        while StartStr not in self.dataLines[self.lnum]:
-            if self.lnum == len(self.dataLines) - 1:
+        while start_str not in self.data_lines[self.lnum]:
+            if self.lnum == len(self.data_lines) - 1:
                 print('Parser: No datasets found, stopping.')
                 break
             self.lnum += 1
 
-        if self.lnum < len(self.dataLines) - 1: # Get root indentation level and store in list
-            self.indts.append(self.FindIndentLevel(self.dataLines[self.lnum]))
-    
-    def FindIndentLevel(self,line):
+        # Get root indentation level and store in list
+        if self.lnum < len(self.data_lines) - 1:
+            self.indts.append(self.find_indent_level
+                              (self.data_lines[self.lnum]))
+
+    def find_indent_level(self, line):
 
         i = 0
         if len(line) > 0:
-            el = line.split()[0] # First element
-            while line[i:i+len(el)] != el: i += 1
+            el = line.split()[0]  # First element
+            while line[i:i+len(el)] != el:
+                i += 1
         return i
 
-    def CheckLine(self):
+    def check_line(self):
 
         doLine = True
 
         self.lnum += 1
-        indt = self.FindIndentLevel(self.dataLines[self.lnum])
+        indt = self.find_indent_level(self.data_lines[self.lnum])
 
-        if indt > self.indts[-1]: # Indentation increased: expecting new variable
+        if indt > self.indts[-1]:  # Increased: expecting new variable
             self.indts.append(indt)
-        elif indt < self.indts[-1]: # Indentation decreased: end of current body
-            while (len(self.indts) > 0) & (indt < self.indts[-1]): self.indts.pop()
+        elif indt < self.indts[-1]:  # Decreased: end of current body
+            while (len(self.indts) > 0) & (indt < self.indts[-1]):
+                self.indts.pop()
             doLine = False
-            if len(self.indts) == 1: # Back to the root level so must be finished
-                self.Finished = True
+            if len(self.indts) == 1:  # Back to root level so must be finished
+                self.finished = True
 
         return doLine
 
-    def PrintData(self,Type,Data): # Type and Data can be passed in externally for convenience
-        print('Type :',Type,'\n')
-        if len(Data) == 0:
+    def print_data(self, dtype, data):
+        # dtype and data can be passed in externally for convenience
+        print('dtype :', dtype, '\n')
+        if len(data) == 0:
             print('Structure is not defined')
 
-    def PrintDataToFile(self,Type,Data,fi): # Type, Data and file object can be passed in externally for convenience
-        fi.write('Type :' + Type + '\n\n')
-        if len(Data) == 0:
-            fi.write('Structure is not defined\n')
+    def print_data_to_file(self, dtype, data, file):
+        # dtype, data & file object can be passed in externally for convenience
+        file.write('dtype :' + dtype + '\n\n')
+        if len(data) == 0:
+            file.write('Structure is not defined\n')

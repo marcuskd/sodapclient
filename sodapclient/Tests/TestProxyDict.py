@@ -1,9 +1,11 @@
+'''TestProxyDict class definition'''
+
 import unittest
 from os import remove
 from sodapclient.ProxyDict import ProxyDict
 
-class TestProxyDict(unittest.TestCase):
 
+class TestProxyDict(unittest.TestCase):
     '''
     Test class for ProxyDict class.
     '''
@@ -11,43 +13,45 @@ class TestProxyDict(unittest.TestCase):
     def setUp(self):
 
         # Define the text proxy details
-        self.proxyConfig = {'user' : 'Me',
-                           'password' : 'abracadabra',
-                           'server' : 'magic.co.uk',
-                           'port' : '1234',
-                           'methods' : ['http','https','ftp','socks']}
+        self.proxy_config = {'user': 'Me',
+                             'password': 'abracadabra',
+                             'server': 'magic.co.uk',
+                             'port': '1234',
+                             'methods': ['http', 'https', 'ftp', 'socks']}
 
         # Write the test proxy details to the file
-        self.proxyFileName = 'ProxyDictTests.txt'
-        fi = open(self.proxyFileName,'wt')
-        fi.write('user'+':'+self.proxyConfig['user']+'\n')
-        fi.write('password'+':'+self.proxyConfig['password']+'\n')
-        fi.write('server'+':'+self.proxyConfig['server']+'\n')
-        fi.write('port'+':'+str(self.proxyConfig['port'])+'\n')
-        fi.write('methods'+':')
-        for m in range(len(self.proxyConfig['methods'])): # Loop is a bit clunky but needed to avoid trailing comma
-            if m < len(self.proxyConfig['methods']) - 1:
-                fi.write(self.proxyConfig['methods'][m]+',')
+        self.proxy_file_name = 'ProxyDictTests.txt'
+        file = open(self.proxy_file_name, 'wt')
+        file.write('user'+':'+self.proxy_config['user']+'\n')
+        file.write('password'+':'+self.proxy_config['password']+'\n')
+        file.write('server'+':'+self.proxy_config['server']+'\n')
+        file.write('port'+':'+str(self.proxy_config['port'])+'\n')
+        file.write('methods'+':')
+        # Loop is a bit clunky but needed to avoid trailing comma...
+        for method in range(len(self.proxy_config['methods'])):
+            if method < len(self.proxy_config['methods']) - 1:
+                file.write(self.proxy_config['methods'][method]+',')
             else:
-                fi.write(self.proxyConfig['methods'][m]+'\n')
-        fi.close()
+                file.write(self.proxy_config['methods'][method]+'\n')
+        file.close()
 
     def tearDown(self):
-        remove(self.proxyFileName)
+        remove(self.proxy_file_name)
 
-    def test_Constructor(self):
-        self.pd = ProxyDict(self.proxyFileName)
-        self.assertEqual(self.proxyConfig,self.pd.proxyConfig)
-        
-    def test_GetDict(self):
-        # Define the dictionary which should be returned
-        proxyTestDict = {'http':'http://Me:abracadabra@magic.co.uk:1234/',
-                         'https':'https://Me:abracadabra@magic.co.uk:1234/',
-                         'ftp':'ftp://Me:abracadabra@magic.co.uk:1234/',
-                         'socks':'socks://Me:abracadabra@magic.co.uk:1234/'}
-        self.test_Constructor()
-        tdict = self.pd.GetDict()
-        self.assertEqual(proxyTestDict, tdict)
+    def test_constructor(self):
+        '''Test the ProxyDict constructor'''
+        pdict = ProxyDict(self.proxy_file_name)
+        self.assertEqual(self.proxy_config, pdict.proxy_config)
+
+    def test_get_dict(self):
+        '''Define the dictionary which should be returned and test for it'''
+        proxy_test_dict = {'http': 'http://Me:abracadabra@magic.co.uk:1234/',
+                           'https': 'https://Me:abracadabra@magic.co.uk:1234/',
+                           'ftp': 'ftp://Me:abracadabra@magic.co.uk:1234/',
+                           'socks': 'socks://Me:abracadabra@magic.co.uk:1234/'}
+        pdict = ProxyDict(self.proxy_file_name)
+        tdict = pdict.get_dict()
+        self.assertEqual(proxy_test_dict, tdict)
 
 if __name__ == "__main__":
     unittest.main()

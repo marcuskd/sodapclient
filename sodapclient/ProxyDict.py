@@ -1,30 +1,38 @@
-class ProxyDict:
+'''ProxyDict class definition'''
 
+
+class ProxyDict:
     '''
     A class to provide proxy server details.
-    Reads in the proxy details from a text file and returns a dictionary of proxy strings as required for
-    class urllib.request.ProxyHandler
+    Reads in the proxy details from a text file and returns a dictionary of
+    proxy strings as required for class urllib.request.ProxyHandler
     '''
 
     def __init__(self, proxyFileName):
 
-        proxyConfig = {} # This is a convenience dictionary
+        proxy_config = {}  # This is a convenience dictionary
 
-        fi = open(proxyFileName,'rt')
-        for line in fi:
-            srcdata = line[:-1].split(':') # Assumes newline at end of all lines
-            proxyConfig[srcdata[0]] = srcdata[1]
-        proxyConfig['methods'] = proxyConfig['methods'].split(',') # Will read in string so convert to list
+        file = open(proxyFileName, 'rt')
+        for line in file:
+            # Assumes newline at end of all lines
+            srcdata = line[:-1].split(':')
+            proxy_config[srcdata[0]] = srcdata[1]
+        # Will read in string so convert to list
+        proxy_config['methods'] = proxy_config['methods'].split(',')
 
-        self.proxyConfig = proxyConfig
+        self.proxy_config = proxy_config
 
-    def GetDict(self):
+    def get_dict(self):
+        '''Returns a dictionary containing the proxy data
+        as required by urllib.request.ProxyHandler'''
 
-        proxyStrs = {} # This is the dictionary required by class urllib.request.ProxyHandler
+        proxy_strs = {}
 
-        for method in self.proxyConfig['methods']:
-            proxyStrs[method] = method + '://' + self.proxyConfig['user'] + ':' + \
-            self.proxyConfig['password'] + '@' + self.proxyConfig['server'] + ':' + \
-            str(self.proxyConfig['port']) + '/'
+        for method in self.proxy_config['methods']:
+            proxy_strs[method] = method + '://' + \
+                self.proxy_config['user'] + ':' + \
+                self.proxy_config['password'] + '@' + \
+                self.proxy_config['server'] + ':' + \
+                str(self.proxy_config['port']) + '/'
 
-        return proxyStrs
+        return proxy_strs

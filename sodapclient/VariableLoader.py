@@ -1,129 +1,160 @@
-from .Definitions import Definitions
+'''VariableLoader class definition'''
+
 import numpy
+from .Definitions import Definitions
+
 
 class VariableLoader:
-
     '''
-    Variable loader class. Does some checks and returns the requested variable as a NumPy array.
+    Variable loader class. Does some checks and returns the requested variable
+    as a NumPy array.
     '''
 
-    def __init__(self,url,datasetName,DDS):
+    def __init__(self, url, dataset_name, dds):
 
         # Get available DDS definitions
         self.url = url
-        self.datasetName = datasetName
-        self.DDS = DDS
+        self.dataset_name = dataset_name
+        self.dds = dds
 
-    def GetRequestURL(self,varName,dimSels):
+    def get_request_url(self, var_name, dim_sels):
 
         '''
-        The dimension selections (dimSels) variable must be a numpy ndarray, type int, size N by 3.
-        Each row corresponds to one variable dimension, with columns containing the min, step and max indexes
+        The dimension selections (dim_sels) variable must be a numpy ndarray,
+        type int, size N by 3.
+        Each row corresponds to one variable dimension, with columns containing
+        the min, step and max indexes
         '''
         # Check variable exists and dimensions are not exceeded
 
-        if varName not in self.DDS:
+        if var_name not in self.dds:
             print('VariableLoader: Requested variable not in DDS, stopping.')
             return None
 
-        varDims = self.DDS[varName][1]
-        numDims = len(varDims)
-        if (numDims > 0) and (dimSels.shape[0] != numDims):
-            print('VariableLoader: Requested number of dimensions incorrect, stopping.')
+        var_dims = self.dds[var_name][1]
+        num_dims = len(var_dims)
+        if (num_dims > 0) and (dim_sels.shape[0] != num_dims):
+            print('VariableLoader: Requested number of dimensions incorrect, \
+stopping.')
             return None
 
         # Extract dimension selections and check they're valid.
 
-        dimsOK = True
-        for d in range(numDims):
-            if (dimSels[d,0] < 0) | (dimSels[d,1] < 0) | (dimSels[d,2] < 0): dimsOK = False
-            if (dimSels[d,0] > varDims[d] - 1) | (dimSels[d,2] > varDims[d] - 1): dimsOK = False
-            if (dimSels[d,2] < dimSels[d,0]): dimsOK = False
-            if (dimSels[d,0] != dimSels[d,2]) and (dimSels[d,1] > dimSels[d,2]): dimsOK = False
+        dims_ok = True
+        for idim in range(num_dims):
+            if (dim_sels[idim, 0] < 0) or (dim_sels[idim, 1] < 0) or \
+               (dim_sels[idim, 2] < 0):
+                dims_ok = False
+            if (dim_sels[idim, 0] > var_dims[idim] - 1) or \
+               (dim_sels[idim, 2] > var_dims[idim] - 1):
+                dims_ok = False
+            if (dim_sels[idim, 2] < dim_sels[idim, 0]):
+                dims_ok = False
+            if (dim_sels[idim, 0] != dim_sels[idim, 2]) and \
+               (dim_sels[idim, 1] > dim_sels[idim, 2]):
+                dims_ok = False
 
-        if not dimsOK:
-            print('VariableLoader: At least one dimension selection request is not valid, stopping.')
+        if not dims_ok:
+            print('VariableLoader: At least one dimension selection request \
+is not valid, stopping.')
             return None
-        
+
         # Construct the request url
-        
-        requrl = self.url + '.dods?' + varName
-        for d in range(numDims):
-            dimstr = '[' + str(dimSels[d,0]) + ':' + str(dimSels[d,1]) + ':' + str(dimSels[d,2]) + ']'
+
+        requrl = self.url + '.dods?' + var_name
+        for idim in range(num_dims):
+            dimstr = '[' + str(dim_sels[idim, 0]) + ':' + \
+                     str(dim_sels[idim, 1]) + ':' + \
+                     str(dim_sels[idim, 2]) + ']'
             requrl += dimstr
-            
+
         return requrl
 
-    def LoadVariable(self,varName,varData,dimSels,byteOrdStr,checkType=True):
-
+    def load_variable(self, var_name, var_data, dim_sels, byte_ord_str,
+                      check_type=True):
         '''
         Load the requested variable and return as a NumPy array.
         '''
 
         dims = False
-        if dimSels.shape[1] == 3: dims = True # Otherwise size is [1,1] and contains number of elements in dimensionless data
+        if dim_sels.shape[1] == 3:
+            dims = True
+        #  Otherwise size is [1,1] and contains number of elements in
+        # dimensionless data
 
         if dims:
-            boffs = 8 # Byte offset for the two occurrences of the number of elements (int32)
+            boffs = 8
+            #  Byte offset for the two occurrences of the number of
+            #  elements (int32)
         else:
-            boffs = 4 # Offset for dimensionless data
+            boffs = 4
+            #  Offset for dimensionless data
 
-        # Find the header portion of the byte stream (until the 'Data' identifier)
+        #  Find the header portion of the byte stream
+        # (until the 'Data' identifier)
 
-        dataId = 'Data:\n'.encode('utf-8')
-        idLen = len(dataId)
-        dataLen = len(varData)
+        data_id = 'Data:\n'.encode('utf-8')
+        id_len = len(data_id)
+        data_len = len(var_data)
 
         i = 0
-        while (i < dataLen-idLen-1) and (varData[i:i+idLen] != dataId): i += 1
-        if varData[i:i+idLen] != dataId:
+        while (i < data_len-id_len-1) and (var_data[i:i+id_len] != data_id):
+            i += 1
+        if var_data[i:i+id_len] != data_id:
             print('VariableLoader: Data start identifier not found, stopping.')
             return None
 
-        dataStartInd = i + idLen
-        dataStartInd += boffs
+        data_start_ind = i + id_len
+        data_start_ind += boffs
 
-        # Check the varData byte stream contains the correct variable type
-        hdrStr = varData[:dataStartInd - boffs].decode('utf-8')
-        varType = self.DDS[varName][0]
-        if checkType:
-            if varType not in hdrStr:
-                print('VariableLoader: Variable type in requested data header does not match DDS, stopping.')
+        # Check the var_data byte stream contains the correct variable type
+        hdr_str = var_data[:data_start_ind - boffs].decode('utf-8')
+        var_type = self.dds[var_name][0]
+        if check_type:
+            if var_type not in hdr_str:
+                print('VariableLoader: Variable type in requested data header \
+does not match DDS, stopping.')
                 return None
-            
-        # Check the varData byte stream contains the correct variable dimensions
 
-        assocNames = self.DDS[varName][2]
-        dimStr = varName
-        numEls = []
+        #  Check the var_data byte stream contains the correct
+        # variable dimensions
+
+        assoc_names = self.dds[var_name][2]
+        dim_str = var_name
+        num_els = []
         if dims:
-            for d in range(dimSels.shape[0]):
+            for idim in range(dim_sels.shape[0]):
                 count = 1
-                ind = dimSels[d,0]
-                while (ind < dimSels[d,2]):
-                    ind += dimSels[d,1]
+                ind = dim_sels[idim, 0]
+                while (ind < dim_sels[idim, 2]):
+                    ind += dim_sels[idim, 1]
                     count += 1
-                if (ind > dimSels[d,2]): count -= 1
-                numEls.append(count)
-                dimStr += '[' + assocNames[d] + ' = ' + str(numEls[d]) + ']'
+                if (ind > dim_sels[idim, 2]):
+                    count -= 1
+                num_els.append(count)
+                dim_str += '[' + assoc_names[idim] + ' = ' + \
+                           str(num_els[idim]) + ']'
         else:
-            numEls = dimSels[0,0] # Number of elements to retrieve
+            num_els = dim_sels[0, 0]  # Number of elements to retrieve
 
-        if dimStr not in hdrStr:
-            print('VariableLoader: Variable dimensions in requested data header do not match DDS, stopping.')
+        if dim_str not in hdr_str:
+            print('VariableLoader: Variable dimensions in requested data \
+header do not match DDS, stopping.')
             return None
 
         # All OK - load the variable
 
-        npType = Definitions.atomics[varType]
-        dataType = npType
+        np_type = Definitions.atomics[var_type]
+        data_type = np_type
 
-        if len(byteOrdStr) > 0:
-            dataType = npType.newbyteorder(byteOrdStr)
+        if len(byte_ord_str) > 0:
+            data_type = np_type.newbyteorder(byte_ord_str)
 
-        lvar = numpy.frombuffer(varData,dtype=dataType,count=numpy.prod(numEls),offset=dataStartInd)
+        lvar = numpy.frombuffer(var_data, dtype=data_type,
+                                count=numpy.prod(num_els),
+                                offset=data_start_ind)
         if dims:
-            var = lvar.reshape(tuple(numEls))
+            var = lvar.reshape(tuple(num_els))
         else:
             var = lvar
 
