@@ -19,8 +19,8 @@ class Parser:
     def find_start(self, data_str, start_str):
 
         # Remove any empty lines
-        tempLines = data_str.split('\n')
-        for l in tempLines:
+        temp_lines = data_str.split('\n')
+        for l in temp_lines:
             if len(l) > 0:
                 self.data_lines.append(l)
 
@@ -47,7 +47,7 @@ class Parser:
 
     def check_line(self):
 
-        doLine = True
+        do_line = True
 
         self.lnum += 1
         indt = self.find_indent_level(self.data_lines[self.lnum])
@@ -57,11 +57,11 @@ class Parser:
         elif indt < self.indts[-1]:  # Decreased: end of current body
             while (len(self.indts) > 0) & (indt < self.indts[-1]):
                 self.indts.pop()
-            doLine = False
+            do_line = False
             if len(self.indts) == 1:  # Back to root level so must be finished
                 self.finished = True
 
-        return doLine
+        return do_line
 
     def print_data(self, dtype, data):
         # dtype and data can be passed in externally for convenience

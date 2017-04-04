@@ -48,7 +48,7 @@ stopping.')
             if (dim_sels[idim, 0] > var_dims[idim] - 1) or \
                (dim_sels[idim, 2] > var_dims[idim] - 1):
                 dims_ok = False
-            if (dim_sels[idim, 2] < dim_sels[idim, 0]):
+            if dim_sels[idim, 2] < dim_sels[idim, 0]:
                 dims_ok = False
             if (dim_sels[idim, 0] != dim_sels[idim, 2]) and \
                (dim_sels[idim, 1] > dim_sels[idim, 2]):
@@ -126,10 +126,10 @@ does not match DDS, stopping.')
             for idim in range(dim_sels.shape[0]):
                 count = 1
                 ind = dim_sels[idim, 0]
-                while (ind < dim_sels[idim, 2]):
+                while ind < dim_sels[idim, 2]:
                     ind += dim_sels[idim, 1]
                     count += 1
-                if (ind > dim_sels[idim, 2]):
+                if ind > dim_sels[idim, 2]:
                     count -= 1
                 num_els.append(count)
                 dim_str += '[' + assoc_names[idim] + ' = ' + \

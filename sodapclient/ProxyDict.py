@@ -8,11 +8,11 @@ class ProxyDict:
     proxy strings as required for class urllib.request.ProxyHandler
     '''
 
-    def __init__(self, proxyFileName):
+    def __init__(self, proxy_file_name):
 
         proxy_config = {}  # This is a convenience dictionary
 
-        file = open(proxyFileName, 'rt')
+        file = open(proxy_file_name, 'rt')
         for line in file:
             # Assumes newline at end of all lines
             srcdata = line[:-1].split(':')
