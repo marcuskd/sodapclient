@@ -10,17 +10,25 @@ class ProxyDict:
 
     def __init__(self, proxy_file_name):
 
+        self.valid_proxy = True
         proxy_config = {}  # This is a convenience dictionary
 
         file = open(proxy_file_name, 'rt')
         for line in file:
             # Assumes newline at end of all lines
             srcdata = line[:-1].split(':')
-            proxy_config[srcdata[0]] = srcdata[1]
-        # Will read in string so convert to list
-        proxy_config['methods'] = proxy_config['methods'].split(',')
+            if (len(srcdata) > 1) and \
+               ('<' not in srcdata[1]) and ('>' not in srcdata[1]):
+                    proxy_config[srcdata[0]] = srcdata[1]
 
-        self.proxy_config = proxy_config
+        if ('server' not in proxy_config) or \
+           ('port' not in proxy_config) or \
+           ('methods' not in proxy_config):
+            self.valid_proxy = False
+        else:
+            # Will read in string so convert to list
+            proxy_config['methods'] = proxy_config['methods'].split(',')
+            self.proxy_config = proxy_config
 
     def get_dict(self):
         '''Returns a dictionary containing the proxy data
@@ -29,10 +37,16 @@ class ProxyDict:
         proxy_strs = {}
 
         for method in self.proxy_config['methods']:
-            proxy_strs[method] = method + '://' + \
-                self.proxy_config['user'] + ':' + \
-                self.proxy_config['password'] + '@' + \
-                self.proxy_config['server'] + ':' + \
-                str(self.proxy_config['port']) + '/'
+            if ('user' in self.proxy_config) and \
+               ('password' in self.proxy_config):
+                proxy_strs[method] = method + '://' + \
+                    self.proxy_config['user'] + ':' + \
+                    self.proxy_config['password'] + '@' + \
+                    self.proxy_config['server'] + ':' + \
+                    str(self.proxy_config['port']) + '/'
+            else:
+                proxy_strs[method] = method + '://' + \
+                    self.proxy_config['server'] + ':' + \
+                    str(self.proxy_config['port']) + '/'
 
         return proxy_strs

@@ -44,9 +44,10 @@ class Handler:
         # Set up the proxy (if required)
         if proxy_file_name is not None:
             self.proxy_dict = ProxyDict(proxy_file_name)
-            self.set_up_proxy()
-            if self.log_file:
-                self.log_file.write('Using Proxy Server.\n')
+            if self.proxy_dict.valid_proxy:
+                self.set_up_proxy()
+        if self.log_file:
+            self.log_file.write('Using Proxy Server.\n')
 
         # Check the URL is valid
         urlval = URLValidator()

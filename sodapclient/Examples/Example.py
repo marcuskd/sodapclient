@@ -10,7 +10,8 @@ from sodapclient import Handler
 # OpenDAP test server):
 url = 'http://test.opendap.org/opendap/hyrax/data/nc/sst.mnmean.nc.gz.html'
 
-handler = Handler(url)  # Initialise handler, which will also get the DDS & DAS
+# Initialise handler, which will also get the DDS & DAS
+handler = Handler(url, proxy_file_name='proxyserver.txt')
 
 # We'll access the SST data over the last 2 times, the last 3 lats and the
 # last 4 longs available...
