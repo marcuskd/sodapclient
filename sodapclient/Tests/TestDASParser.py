@@ -1,5 +1,6 @@
 '''TestDASParser class definition'''
 
+import os
 import unittest
 from ..DASParser import DASParser
 
@@ -42,8 +43,11 @@ Attributes {
                               'Int32 posup -1']
                     }
 
+        self.test_file_name = 'dasparser_out.txt'
+
     def tearDown(self):
-        pass
+        if os.path.exists(self.test_file_name):
+            os.remove(self.test_file_name)
 
     def test_constructor(self):
         ''' Test the DASParser constructor'''
@@ -55,6 +59,17 @@ Attributes {
         das_parser.parse(self.das_str)
         self.assertEqual(self.das, das_parser.data)
 
+    def test_print(self):
+        '''Test the print method'''
+        das_parser = DASParser()
+        das_parser.print_das()
+
+    def test_print_to_file(self):
+        '''Test the print to file method'''
+        das_parser = DASParser()
+        test_file = open(self.test_file_name, 'wt')
+        das_parser.print_das_to_file(file_name=test_file)
+        self.assertEqual(os.path.exists(self.test_file_name), True)
 
 if __name__ == "__main__":
     unittest.main()

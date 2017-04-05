@@ -1,5 +1,6 @@
 '''TestDDSParser class definition'''
 
+import os
 import unittest
 from sodapclient.DDSParser import DDSParser
 
@@ -32,8 +33,11 @@ Dataset {
                     'depth': ['Int16', [10, 20], ['lat', 'long']]
                     }
 
+        self.test_file_name = 'dasparser_out.txt'
+
     def tearDown(self):
-        pass
+        if os.path.exists(self.test_file_name):
+            os.remove(self.test_file_name)
 
     def test_constructor(self):
         ''' Test the DDSParser constructor'''
@@ -45,6 +49,18 @@ Dataset {
         dds_parser.parse(self.dds_str)
         self.assertEqual(self.dataset_name, dds_parser.dataset_name)
         self.assertEqual(self.dds, dds_parser.data)
+
+    def test_print(self):
+        '''Test the print method'''
+        dds_parser = DDSParser()
+        dds_parser.print_dds()
+
+    def test_print_to_file(self):
+        '''Test the print to file method'''
+        dds_parser = DDSParser()
+        test_file = open(self.test_file_name, 'wt')
+        dds_parser.print_dds_to_file(file_name=test_file)
+        self.assertEqual(os.path.exists(self.test_file_name), True)
 
 
 if __name__ == "__main__":
