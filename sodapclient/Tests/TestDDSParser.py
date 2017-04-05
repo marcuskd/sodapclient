@@ -53,11 +53,13 @@ Dataset {
     def test_print(self):
         '''Test the print method'''
         dds_parser = DDSParser()
+        dds_parser.parse(self.dds_str)
         dds_parser.print_dds()
 
     def test_print_to_file(self):
         '''Test the print to file method'''
         dds_parser = DDSParser()
+        dds_parser.parse(self.dds_str)
         test_file = open(self.test_file_name, 'wt')
         dds_parser.print_dds_to_file(file_name=test_file)
         self.assertEqual(os.path.exists(self.test_file_name), True)

@@ -62,11 +62,13 @@ Attributes {
     def test_print(self):
         '''Test the print method'''
         das_parser = DASParser()
+        das_parser.parse(self.das_str)
         das_parser.print_das()
 
     def test_print_to_file(self):
         '''Test the print to file method'''
         das_parser = DASParser()
+        das_parser.parse(self.das_str)
         test_file = open(self.test_file_name, 'wt')
         das_parser.print_das_to_file(file_name=test_file)
         self.assertEqual(os.path.exists(self.test_file_name), True)
