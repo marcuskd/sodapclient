@@ -20,7 +20,7 @@ class ProxyDict:
             srcdata = line[:-1].split(':')
             if (len(srcdata) > 1) and \
                ('<' not in srcdata[1]) and ('>' not in srcdata[1]):
-                    proxy_config[srcdata[0]] = srcdata[1].split()  # No spaces
+                    proxy_config[srcdata[0]] = srcdata[1].strip()  # No spaces
 
         if ('server' not in proxy_config) or \
            ('port' not in proxy_config) or \
