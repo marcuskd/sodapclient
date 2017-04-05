@@ -6,6 +6,7 @@ class ProxyDict:
     A class to provide proxy server details.
     Reads in the proxy details from a text file and returns a dictionary of
     proxy strings as required for class urllib.request.ProxyHandler
+    Example proxy server text file contained in Examples package.
     '''
 
     def __init__(self, proxy_file_name):
@@ -19,7 +20,7 @@ class ProxyDict:
             srcdata = line[:-1].split(':')
             if (len(srcdata) > 1) and \
                ('<' not in srcdata[1]) and ('>' not in srcdata[1]):
-                    proxy_config[srcdata[0]] = srcdata[1]
+                    proxy_config[srcdata[0]] = srcdata[1].split()  # No spaces
 
         if ('server' not in proxy_config) or \
            ('port' not in proxy_config) or \
