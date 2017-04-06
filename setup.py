@@ -22,4 +22,6 @@ setup(name = 'sodapclient',
       install_requires = ['numpy >= 1.12',
                           'Django >= 1.9'
                           ],
+      package_data = {'sodapclient.Examples':['proxyserver.txt'],
+                      },
       )
