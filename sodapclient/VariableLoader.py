@@ -55,7 +55,8 @@ is not valid, stopping.')
 
         return requrl
 
-    def check_dim_sels(self, var_dims, dim_sels, num_dims):
+    @staticmethod
+    def check_dim_sels(var_dims, dim_sels, num_dims):
 
         '''Extract dimension selections and check they're valid.'''
 
