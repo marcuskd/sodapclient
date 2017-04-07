@@ -38,22 +38,7 @@ class VariableLoader:
 stopping.')
             return None
 
-        # Extract dimension selections and check they're valid.
-
-        dims_ok = True
-        for idim in range(num_dims):
-            if (dim_sels[idim, 0] < 0) or (dim_sels[idim, 1] < 0) or \
-               (dim_sels[idim, 2] < 0):
-                dims_ok = False
-            if (dim_sels[idim, 0] > var_dims[idim] - 1) or \
-               (dim_sels[idim, 2] > var_dims[idim] - 1):
-                dims_ok = False
-            if dim_sels[idim, 2] < dim_sels[idim, 0]:
-                dims_ok = False
-            if (dim_sels[idim, 0] != dim_sels[idim, 2]) and \
-               (dim_sels[idim, 1] > dim_sels[idim, 2]):
-                dims_ok = False
-
+        dims_ok = self.check_dim_sels(var_dims, dim_sels, num_dims)
         if not dims_ok:
             print('VariableLoader: At least one dimension selection request \
 is not valid, stopping.')
@@ -69,6 +54,26 @@ is not valid, stopping.')
             requrl += dimstr
 
         return requrl
+
+    def check_dim_sels(self, var_dims, dim_sels, num_dims):
+
+        '''Extract dimension selections and check they're valid.'''
+
+        dims_ok = True
+        for idim in range(num_dims):
+            if (dim_sels[idim, 0] < 0) or (dim_sels[idim, 1] < 0) or \
+               (dim_sels[idim, 2] < 0):
+                dims_ok = False
+            if (dim_sels[idim, 0] > var_dims[idim] - 1) or \
+               (dim_sels[idim, 2] > var_dims[idim] - 1):
+                dims_ok = False
+            if dim_sels[idim, 2] < dim_sels[idim, 0]:
+                dims_ok = False
+            if (dim_sels[idim, 0] != dim_sels[idim, 2]) and \
+               (dim_sels[idim, 1] > dim_sels[idim, 2]):
+                dims_ok = False
+
+        return dims_ok
 
     def load_variable(self, var_name, var_data, dim_sels, byte_ord_str,
                       check_type=True):
@@ -110,30 +115,17 @@ is not valid, stopping.')
         # Check the var_data byte stream contains the correct variable type
         hdr_str = var_data[:data_start_ind - boffs].decode('utf-8')
         var_type = self.dds[var_name][0]
-        if check_type:
-            if var_type not in hdr_str:
-                print('VariableLoader: Variable type in requested data header \
+        if check_type and (var_type not in hdr_str):
+            print('VariableLoader: Variable type in requested data header \
 does not match DDS, stopping.')
-                return None
+            return None
 
         #  Check the var_data byte stream contains the correct
         # variable dimensions
 
-        assoc_names = self.dds[var_name][2]
         dim_str = var_name
-        num_els = []
         if dims:
-            for idim in range(dim_sels.shape[0]):
-                count = 1
-                ind = dim_sels[idim, 0]
-                while ind < dim_sels[idim, 2]:
-                    ind += dim_sels[idim, 1]
-                    count += 1
-                if ind > dim_sels[idim, 2]:
-                    count -= 1
-                num_els.append(count)
-                dim_str += '[' + assoc_names[idim] + ' = ' + \
-                           str(num_els[idim]) + ']'
+            dim_str, num_els = self.get_dim_str(dim_sels, var_name)
         else:
             num_els = dim_sels[0, 0]  # Number of elements to retrieve
 
@@ -159,3 +151,24 @@ header do not match DDS, stopping.')
             var = lvar
 
         return var
+
+    def get_dim_str(self, dim_sels, var_name):
+
+        '''Get the dimension selection string and numbr of elements'''
+
+        assoc_names = self.dds[var_name][2]
+        dim_str = var_name
+        num_els = []
+        for idim in range(dim_sels.shape[0]):
+            count = 1
+            ind = dim_sels[idim, 0]
+            while ind < dim_sels[idim, 2]:
+                ind += dim_sels[idim, 1]
+                count += 1
+            if ind > dim_sels[idim, 2]:
+                count -= 1
+            num_els.append(count)
+            dim_str += '[' + assoc_names[idim] + ' = ' + \
+                       str(num_els[idim]) + ']'
+
+        return dim_str, num_els

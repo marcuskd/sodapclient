@@ -36,7 +36,8 @@ class Parser:
             self.indts.append(self.find_indent_level
                               (self.data_lines[self.lnum]))
 
-    def find_indent_level(self, line):
+    @staticmethod
+    def find_indent_level(line):
 
         i = 0
         if len(line) > 0:
@@ -63,13 +64,15 @@ class Parser:
 
         return do_line
 
-    def print_data(self, dtype, data):
+    @staticmethod
+    def print_data(dtype, data):
         # dtype and data can be passed in externally for convenience
         print('dtype :', dtype, '\n')
         if len(data) == 0:
             print('Structure is not defined')
 
-    def print_data_to_file(self, dtype, data, file):
+    @staticmethod
+    def print_data_to_file(dtype, data, file):
         # dtype, data & file object can be passed in externally for convenience
         file.write('dtype :' + dtype + '\n\n')
         if len(data) == 0:
