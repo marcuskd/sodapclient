@@ -1,15 +1,18 @@
-''' DDSParser class definition '''
+"""
+DDSParser class definition
+"""
 
 from .Parser import Parser
 from .Definitions import Definitions
 
 
 class DDSParser(Parser):
-    '''
+
+    """
     Dataset Descriptor Response (dds) parser class.
 
-    Given a dds string read from a URL, it parses the string to set up
-    a dds dictionary. The dictionary is of form:
+    Given a DDS string read from a URL, it parses the string to set up
+    a DDS dictionary. The dictionary is of form:
     {name : [type, [dims], [assoc_names]]}
     where name is the variable name,
     dims is a list of dimensions,
@@ -19,12 +22,12 @@ class DDSParser(Parser):
 
     A single data set is included, i.e. if the URL describes more than one,
     only the first will be included.
-    '''
+    """
 
     def __init__(self):
 
         super().__init__()
-        self.dtype = 'Dataset Descriptor Structure (dds)'
+        self.dtype = 'Dataset Descriptor Structure (DDS)'
 
         self.atomic_defs = list(Definitions.atomics.keys())
         self.constructor_defs = Definitions.constructors
@@ -32,7 +35,12 @@ class DDSParser(Parser):
         self.dataset_name = 'Undefined'
 
     def parse(self, dds_str):
-        '''Parse the DDS'''
+
+        """
+        Parse the DDS.
+        args...
+            dds_str: DDS string
+        """
 
         self.find_start(dds_str, Definitions.dataset)
 
@@ -48,7 +56,10 @@ class DDSParser(Parser):
             self.dataset_name = self.data_lines[self.lnum].split()[-1][:-1]
 
     def process_line(self):
-        ''' Process a line'''
+
+        """
+        Process a line.
+        """
 
         var_type = None
         next_line = self.data_lines[self.lnum]
@@ -66,7 +77,14 @@ class DDSParser(Parser):
                     break
 
     def read_atomic(self, line, var_type):
-        ''' Read an atomic variable'''
+
+        """
+        Read an atomic variable.
+        args...
+            line: line
+            var_type: variable type
+        """
+
         # Will still work even if dimensionless...
         var_name = line.split()[1].split('[')[0]
         segs = line.split('=')
@@ -74,22 +92,33 @@ class DDSParser(Parser):
         # Remove trailing semicolon...
         if num_dims == 0:
             var_name = var_name[:-1]
-        dims = [None]*num_dims
-        assoc_names = [None]*num_dims
+        dims = [None] * num_dims
+        assoc_names = [None] * num_dims
         for idim in range(num_dims):
             # Remove trailing space...
             assoc_names[idim] = segs[idim].split('[')[-1][:-1]
-            dims[idim] = int(segs[idim+1].split(']')[0])
+            dims[idim] = int(segs[idim + 1].split(']')[0])
         self.data[var_name] = [var_type, dims, assoc_names]
 
     def read_constructor(self, line, var_type):
-        ''' Reading constructor variables not implemented
-        (all variables handled as atomics)'''
+
+        """
+        Reading constructor variables not implemented
+        (all variables handled as atomics).
+        """
+
         pass
 
     def print_dds(self, dataset_name=None, dds=None):
-        ''' Print the dds to the console. Dataset name and dds
-        can be passed in externally for convenience'''
+
+        """
+        Print the DDS to the console. Dataset name and DDS
+        can be passed in externally for convenience.
+        kwargs...
+            dataset_name: dataset name (string)
+            dds: DDS (dictionary)
+        """
+
         if dataset_name is None:
             dataset_name = self.dataset_name
         if dds is None:
@@ -103,8 +132,17 @@ class DDSParser(Parser):
             print('Associated names :', dds[var][2], '\n')
 
     def print_dds_to_file(self, file_name, dataset_name=None, dds=None):
-        ''' Print the dds to a file. Dataset name and dds
-        can be passed in externally for convenience'''
+
+        """
+        Print the DDS to a file. Dataset name and DDS
+        can be passed in externally for convenience.
+        args...
+            file_name: file name (string)
+        kwargs...
+            dataset_name: dataset name (string)
+            dds: DDS (dictionary)
+        """
+
         if dataset_name is None:
             dataset_name = self.dataset_name
         if dds is None:

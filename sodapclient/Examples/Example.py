@@ -1,6 +1,7 @@
-''' Example use of sodapclient.
+"""
+Example use of sodapclient.
 To run this example at the command line enter: python3 Example.py
-'''
+"""
 
 import numpy
 

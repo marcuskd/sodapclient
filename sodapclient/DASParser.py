@@ -1,4 +1,6 @@
-''' DASParser class definition '''
+"""
+DASParser class definition
+"""
 
 from .Parser import Parser
 from .Definitions import Definitions
@@ -6,17 +8,22 @@ from .Definitions import Definitions
 
 class DASParser(Parser):
 
-    '''
-    DASParser class. Extracts and stores the attributes within a das string.
-    '''
+    """
+    DASParser class. Extracts and stores the attributes within a DAS string.
+    """
 
     def __init__(self):
 
         super().__init__()
-        self.dtype = 'Dataset Attribute Structure (das)'
+        self.dtype = 'Dataset Attribute Structure (DAS)'
 
     def parse(self, das_str):
-        ''' Parse the DAS'''
+
+        """
+        Parse the DAS.
+        args...
+            das_str: DAS string.
+        """
 
         self.find_start(das_str, Definitions.attributes)
 
@@ -36,7 +43,13 @@ class DASParser(Parser):
                 self.data[attr_name] = attr_data
 
     def print_das(self, das=None):
-        '''Print the DAS to the console'''
+
+        """
+        Print the DAS to the console. DAS can be passed in externally for convenience.
+        kwargs...
+            das: DAS (dictionary)
+        """
+
         if das is None:
             das = self.data
         self.print_data(self.dtype, das)
@@ -48,7 +61,15 @@ class DASParser(Parser):
             print()
 
     def print_das_to_file(self, file_name, das=None):
-        '''Print the DAS to a file'''
+
+        """
+        Print the DAS to a file. DAS can be passed in externally for convenience.
+        args...
+            file_name: file name (string)
+        kwargs...
+            das: DAS (dictionary)
+        """
+
         if das is None:
             das = self.data
         self.print_data_to_file(self.dtype, das, file_name)

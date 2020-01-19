@@ -1,15 +1,23 @@
-'''ProxyDict class definition'''
+"""
+ProxyDict class definition
+"""
 
 
 class ProxyDict:
-    '''
+
+    """
     A class to provide proxy server details.
     Reads in the proxy details from a text file and returns a dictionary of
     proxy strings as required for class urllib.request.ProxyHandler
     Example proxy server text file contained in Examples package.
-    '''
+    """
 
     def __init__(self, proxy_file_name):
+
+        """
+        args...
+            proxy_file_name: path to text file containing proxy details
+        """
 
         self.valid_proxy = True
         proxy_config = {}  # This is a convenience dictionary
@@ -32,8 +40,11 @@ class ProxyDict:
             self.proxy_config = proxy_config
 
     def get_dict(self):
-        '''Returns a dictionary containing the proxy data
-        as required by urllib.request.ProxyHandler'''
+
+        """
+        Returns a dictionary containing the proxy data
+        as required by urllib.request.ProxyHandler
+        """
 
         proxy_strs = {}
 

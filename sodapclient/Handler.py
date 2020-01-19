@@ -1,4 +1,6 @@
-''''Handler class definition'''
+"""
+Handler class definition
+"""
 
 import urllib.request as ureq
 from datetime import datetime
@@ -14,7 +16,7 @@ from .VariableLoader import VariableLoader
 
 class Handler:
 
-    '''
+    """
     The main sodapclient class.
 
     Both atomic variables and constructor variables are handled.
@@ -29,9 +31,17 @@ class Handler:
     a constructor are identical to any variable with the same name defined
     outside the constructor. This should not be a limitation as all OpenDAP
     datasets seem to adhere to this anyway.
-    '''
+    """
 
     def __init__(self, url, proxy_file_name=None, log=False):
+
+        """
+        args...
+            url: URL
+        kwargs...
+            proxy_file_name: path to text file containing proxy details
+            log: whether to create a log file
+        """
 
         self.log_file = None
         if log:
@@ -77,20 +87,32 @@ class Handler:
         self.variables = {}  # Dictionary to hold loaded variables
 
     def __del__(self):
-        '''Close the log file when the handler is deleted'''
+
+        """
+        Close the log file when the handler is deleted.
+        """
+
         if self.log_file:
             self.log_file.write('\nHandler destroyed at ' +
                                 str(datetime.now()) + '\n\n')
             self.log_file.close()
 
     def set_up_proxy(self):
-        '''Set up the proxy'''
+
+        """
+        Set up the proxy.
+        """
+
         proxy_handler = ureq.ProxyHandler(self.proxy_dict.get_dict())
         opener = ureq.build_opener(proxy_handler)
         ureq.install_opener(opener)
 
     def get_dds(self):
-        '''Get the Dataset Descriptor Structure (DDS)'''
+
+        """
+        Get the Dataset Descriptor Structure (DDS).
+        """
+
         turl = self.base_url + '.dds'
         try:
             urlo = ureq.urlopen(turl)
@@ -108,7 +130,11 @@ class Handler:
             dds_parser.print_dds_to_file(self.log_file)
 
     def get_das(self):
-        '''Get the Dataset Attribute Structure (DAS)'''
+
+        """
+        Get the Dataset Attribute Structure (DAS).
+        """
+
         turl = self.base_url + '.das'
         try:
             urlo = ureq.urlopen(turl)
@@ -126,7 +152,17 @@ class Handler:
             self.log_file.write('-----------\n\n')
 
     def get_variable(self, var_name, dim_sels, byte_ord_str, check_type=True):
-        '''Get a variable'''
+
+        """
+        Get a variable.
+        args...
+            var_name: variable name
+            dim_sels: dimension selections (see get_request_url)
+            byte_ord_str: byte order string: '<' for little endian, '>' for big endian
+        kwargs...
+            check_type: check header string contains expected variable type
+        """
+
         var_loader = VariableLoader(self.base_url, self.dataset_name, self.dds)
         requrl = var_loader.get_request_url(var_name, dim_sels)
         if requrl is not None:
@@ -138,7 +174,11 @@ class Handler:
                 self.variables[var_name] = var
 
     def print_status(self):
-        '''Print the handler status to the console'''
+
+        """
+        Print the handler status to the console.
+        """
+
         print('HANDLER STATUS...\n')
         print('Base URL:', self.base_url, '\n')
         print('dds:\n')
@@ -149,7 +189,11 @@ class Handler:
         psr.print_das(self.das)  # Convenience instantiation just to print dds
 
     def print(self):
-        '''Print the handler status and available variables'''
+
+        """
+        Print the handler status and available variables.
+        """
+
         self.print_status()
         print('VARIABLES...\n')
         if len(self.variables) > 0:

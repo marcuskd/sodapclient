@@ -1,13 +1,16 @@
-'''Variable definitions'''
+"""
+Variable definitions
+"""
 
 import numpy
 
 
 class Definitions:
-    '''
-    Simple 'static' class to provide OpenDAP variable definitions
-    Includes mapping to NumPy variable types where available
-    '''
+
+    """
+    Simple 'static' class to provide OpenDAP variable definitions.
+    Includes mapping to NumPy variable types where available.
+    """
 
     atomics = {'Byte': numpy.dtype(numpy.byte),
                'Int16': numpy.dtype(numpy.int32),  # Int16->int32 in practice?

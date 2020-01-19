@@ -1,11 +1,13 @@
-'''Parser class definition'''
+"""
+Parser class definition
+"""
 
 
 class Parser:
 
-    '''
+    """
     Serves as base class for DDSParser and DASParser classes.
-    '''
+    """
 
     def __init__(self):
 
@@ -17,6 +19,13 @@ class Parser:
         self.finished = False  # Flag to indicate parsing complete
 
     def find_start(self, data_str, start_str):
+
+        """
+        Find the start of a dataset.
+        args...
+            data_str: string to be searched
+            start_str: string indicating start of dataset
+        """
 
         # Remove any empty lines
         temp_lines = data_str.split('\n')
@@ -39,14 +48,24 @@ class Parser:
     @staticmethod
     def find_indent_level(line):
 
+        """
+        Find the indentation level.
+        args:
+            line: line to find indentation level
+        """
+
         i = 0
         if len(line) > 0:
             el = line.split()[0]  # First element
-            while line[i:i+len(el)] != el:
+            while line[i:i + len(el)] != el:
                 i += 1
         return i
 
     def check_line(self):
+
+        """
+        Check whether to process a line.
+        """
 
         do_line = True
 
@@ -66,14 +85,29 @@ class Parser:
 
     @staticmethod
     def print_data(dtype, data):
-        # dtype and data can be passed in externally for convenience
+
+        """
+        Print data type and data (these can be passed in externally for convenience).
+        args:
+            dtype: data type
+            data: data to be printed
+        """
+
         print('dtype :', dtype, '\n')
         if len(data) == 0:
             print('Structure is not defined')
 
     @staticmethod
     def print_data_to_file(dtype, data, file):
-        # dtype, data & file object can be passed in externally for convenience
+
+        """
+        Print data type and data to a file (these can be passed in externally for convenience).
+        args:
+            dtype: data type
+            data: data to be printed
+            file: file object
+        """
+
         file.write('dtype :' + dtype + '\n\n')
         if len(data) == 0:
             file.write('Structure is not defined\n')
