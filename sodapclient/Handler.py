@@ -3,10 +3,9 @@ Handler class definition
 """
 
 import urllib.request as ureq
-from datetime import datetime
+from urllib.parse import urlparse as upar
 
-from django.core.validators import URLValidator
-from django.core.exceptions import ValidationError
+from datetime import datetime
 
 from .ProxyDict import ProxyDict
 from .DDSParser import DDSParser
@@ -60,15 +59,12 @@ class Handler:
             self.log_file.write('Using Proxy Server.\n')
 
         # Check the URL is valid
-        urlval = URLValidator()
-        try:
-            urlval(url)
-        except ValidationError:
+        parts = upar(url)
+        if not all(parts[:3]):
             msg = 'ERROR: Invalid URL format\n'
             if self.log_file:
                 self.log_file.write(msg)
-            print(msg)
-            raise
+            raise ValueError(msg)
 
         self.base_url = url
         if self.base_url[-4:] == 'html':   # Remove .html extension if present
