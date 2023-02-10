@@ -30,9 +30,16 @@ class Handler:
     a constructor are identical to any variable with the same name defined
     outside the constructor. This should not be a limitation as all OpenDAP
     datasets seem to adhere to this anyway.
+
+    args...
+        url: OPeNDAP URL
+    kwargs...
+        proxy_file_name: Name of text file containing proxy details
+        credentials: Credentials dictionary
+        log: Creates log file on True
     """
 
-    def __init__(self, url, proxy_file_name=None, log=False):
+    def __init__(self, url, proxy_file_name=None, credentials=None, log=False):
 
         """
         args...
@@ -56,7 +63,15 @@ class Handler:
             if self.proxy_dict.valid_proxy:
                 self.set_up_proxy()
         if self.log_file:
-            self.log_file.write('Using Proxy Server.\n')
+            if self.proxy_dict.valid_proxy:
+                self.log_file.write('Using Proxy Server.\n')
+            else:
+                self.log_file.write('Invalid Proxy.\n')
+
+        # Set up authentication (if required)
+        if credentials is not None:
+            self.credentials = credentials
+            self.set_credentials()
 
         # Check the URL is valid
         parts = upar(url)
@@ -101,6 +116,19 @@ class Handler:
 
         proxy_handler = ureq.ProxyHandler(self.proxy_dict.get_dict())
         opener = ureq.build_opener(proxy_handler)
+        ureq.install_opener(opener)
+
+    def set_credentials(self):
+
+        """
+        Set up credentials.
+        """
+
+        pswd_mgr = ureq.HTTPPasswordMgr()
+        pswd_mgr.add_password(realm=self.credentials['realm'], uri=self.credentials['top-level-url'],
+                              user=self.credentials['username'], passwd=self.credentials['password'])
+        auth_handler = ureq.HTTPBasicAuthHandler(pswd_mgr)
+        opener = ureq.build_opener(auth_handler)
         ureq.install_opener(opener)
 
     def get_dds(self):
