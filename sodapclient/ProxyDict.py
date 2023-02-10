@@ -22,12 +22,12 @@ class ProxyDict:
         self.valid_proxy = True
         proxy_config = {}  # This is a convenience dictionary
 
-        file = open(proxy_file_name, 'rt')
-        for line in file:
-            # Assumes newline at end of all lines
-            srcdata = line[:-1].split(':')
-            if (len(srcdata) > 1) and \
-               ('<' not in srcdata[1]) and ('>' not in srcdata[1]):
+        with open(proxy_file_name, 'rt') as file:
+            for line in file:
+                # Assumes newline at end of all lines
+                srcdata = line[:-1].split(':')
+                if (len(srcdata) > 1) and \
+                   ('<' not in srcdata[1]) and ('>' not in srcdata[1]):
                     proxy_config[srcdata[0]] = srcdata[1].strip()  # No spaces
 
         if ('server' not in proxy_config) or \

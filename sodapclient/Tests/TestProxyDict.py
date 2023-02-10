@@ -64,5 +64,6 @@ class TestProxyDict(unittest.TestCase):
         tdict = pdict.get_dict()
         self.assertEqual(proxy_test_dict, tdict)
 
+
 if __name__ == "__main__":
     unittest.main()

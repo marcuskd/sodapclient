@@ -89,9 +89,10 @@ Attributes {
 
         das_parser = DASParser()
         das_parser.parse(self.das_str)
-        test_file = open(self.test_file_name, 'wt')
-        das_parser.print_das_to_file(file_name=test_file)
+        with open(self.test_file_name, 'wt') as test_file:
+            das_parser.print_das_to_file(file_name=test_file)
         self.assertEqual(os.path.exists(self.test_file_name), True)
+
 
 if __name__ == "__main__":
     unittest.main()

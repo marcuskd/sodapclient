@@ -80,9 +80,10 @@ Dataset {
 
         dds_parser = DDSParser()
         dds_parser.parse(self.dds_str)
-        test_file = open(self.test_file_name, 'wt')
-        dds_parser.print_dds_to_file(file_name=test_file)
+        with open(self.test_file_name, 'wt') as test_file:
+            dds_parser.print_dds_to_file(file_name=test_file)
         self.assertEqual(os.path.exists(self.test_file_name), True)
+
 
 if __name__ == "__main__":
     unittest.main()

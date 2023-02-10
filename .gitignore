@@ -1,7 +1,5 @@
 /build
 /dist
-.project
-.pydevproject
 /sodapclient.egg-info
+/.idea
 __pycache__/
-
