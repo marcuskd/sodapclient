@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='sodapclient',
-      version='0.1.1',
+      version='0.2.0',
       description='A simple OpenDAP client library',
       author='Systems Engineering & Assessment Ltd.',
       author_email='Marcus.Donnelly@sea.co.uk',
@@ -19,7 +19,7 @@ setup(name='sodapclient',
                 'Science'
                 ],
       packages=find_packages(),
-      install_requires=['numpy >= 1.12'],
+      install_requires=['numpy >= 1.20'],
       package_data={'sodapclient.Examples': ['proxyserver.txt'],
                     },
       )
