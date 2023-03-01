@@ -96,7 +96,7 @@ class TestVariableLoader(unittest.TestCase):
 
         var_loader = self.test_constructor()
         requrl = var_loader.get_request_url('depth', self.dim_sels)
-        self.assertEqual(requrl, self.url + '.dods?depth[0:4:9][0:2:19]')
+        self.assertEqual(requrl, self.url + '.dods?depth%5B0:4:9%5D%5B0:2:19%5D')
 
     def test_load_variable(self):
 
@@ -108,6 +108,7 @@ class TestVariableLoader(unittest.TestCase):
         var = var_loader.load_variable('depth', self.var_data, self.dim_sels,
                                        self.byte_ord_str)
         self.assertTrue(numpy.array_equal(var, self.depth_sel))
+
 
 if __name__ == "__main__":
     unittest.main()

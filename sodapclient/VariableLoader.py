@@ -55,13 +55,13 @@ class VariableLoader:
             print('VariableLoader: At least one dimension selection request is not valid, stopping.')
             return None
 
-        # Construct the request url
+        # Construct the request url (replace square brackets with hex codes as needed by some servers)
 
         requrl = self.url + '.dods?' + var_name
         for idim in range(num_dims):
-            dimstr = '[' + str(dim_sels[idim, 0]) + ':' + \
+            dimstr = '%5B' + str(dim_sels[idim, 0]) + ':' + \
                      str(dim_sels[idim, 1]) + ':' + \
-                     str(dim_sels[idim, 2]) + ']'
+                     str(dim_sels[idim, 2]) + '%5D'
             requrl += dimstr
 
         return requrl
@@ -166,9 +166,7 @@ class VariableLoader:
         if len(byte_ord_str) > 0:
             data_type = np_type.newbyteorder(byte_ord_str)
 
-        lvar = numpy.frombuffer(var_data, dtype=data_type,
-                                count=numpy.prod(num_els),
-                                offset=data_start_ind)
+        lvar = numpy.frombuffer(var_data, dtype=data_type, count=int(numpy.prod(num_els)), offset=data_start_ind)
         if dims:
             var = lvar.reshape(tuple(num_els))
         else:
