@@ -2,4 +2,4 @@
 
 -----------
 
-### A simple OpenDAP client library
+### A simple OPeNDAP client library
