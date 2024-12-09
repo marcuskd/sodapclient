@@ -7,10 +7,10 @@ from urllib.parse import urlparse as upar
 
 from datetime import datetime
 
-from .ProxyDict import ProxyDict
-from .DDSParser import DDSParser
-from .DASParser import DASParser
-from .VariableLoader import VariableLoader
+from sodapclient.ProxyDict import ProxyDict
+from sodapclient.DDSParser import DDSParser
+from sodapclient.DASParser import DASParser
+from sodapclient.VariableLoader import VariableLoader
 
 
 class Handler:

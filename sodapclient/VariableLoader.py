@@ -3,7 +3,7 @@ VariableLoader class definition
 """
 
 import numpy
-from .Definitions import Definitions
+from sodapclient.Definitions import Definitions
 
 
 class VariableLoader:

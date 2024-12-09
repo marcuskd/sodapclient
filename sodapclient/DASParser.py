@@ -2,8 +2,8 @@
 DASParser class definition
 """
 
-from .Parser import Parser
-from .Definitions import Definitions
+from sodapclient.Parser import Parser
+from sodapclient.Definitions import Definitions
 
 
 class DASParser(Parser):

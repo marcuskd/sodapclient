@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
 
 setup(name='sodapclient',
-      version='0.2.1',
+      version='0.2.2',
       description='A simple OpenDAP client library',
-      author='Systems Engineering & Assessment Ltd.',
-      author_email='Marcus.Donnelly@sea.co.uk',
-      url='https://bitbucket.org/sea_dev/sodapclient',
+      author='Marcus Donnelly',
+      author_email='marcus.k.donnelly@gmail.com',
+      url='https://github.com/marcuskd/sodapclient',
       license='MIT',
       classifiers=['Development Status :: 3 - Alpha',
                    'Intended Audience :: Science/Research',
@@ -19,7 +19,6 @@ setup(name='sodapclient',
                 'Science'
                 ],
       packages=find_packages(),
-      install_requires=['numpy >= 1.20'],
-      package_data={'sodapclient.Examples': ['proxyserver.txt'],
-                    },
+      install_requires=['numpy >= 1.23'],
+      include_package_data=True
       )
