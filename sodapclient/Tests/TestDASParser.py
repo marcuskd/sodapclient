@@ -90,7 +90,7 @@ Attributes {
         das_parser = DASParser()
         das_parser.parse(self.das_str)
         with open(self.test_file_name, 'wt') as test_file:
-            das_parser.print_das_to_file(file_name=test_file)
+            das_parser.print_das_to_file(test_file)
         self.assertEqual(os.path.exists(self.test_file_name), True)
 
 

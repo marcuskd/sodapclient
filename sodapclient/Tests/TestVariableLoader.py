@@ -63,7 +63,7 @@ class TestVariableLoader(unittest.TestCase):
 
         var_loader = self.test_constructor()
         requrl = var_loader.get_request_url('height', [])
-        self.assertEqual(requrl, None)
+        self.assertEqual(requrl, '')
 
     def test_number_of_dims(self):
 
@@ -74,7 +74,7 @@ class TestVariableLoader(unittest.TestCase):
         var_loader = self.test_constructor()
         dim_sels = numpy.ndarray(shape=(1, 3), dtype='int32')
         requrl = var_loader.get_request_url('depth', dim_sels)
-        self.assertEqual(requrl, None)
+        self.assertEqual(requrl, '')
 
     def test_dim_selection(self):
 
@@ -86,7 +86,7 @@ class TestVariableLoader(unittest.TestCase):
         dim_sels = self.dim_sels
         dim_sels[1, 2] = 20
         requrl = var_loader.get_request_url('depth', dim_sels)
-        self.assertEqual(requrl, None)
+        self.assertEqual(requrl, '')
 
     def test_url_construction(self):
 

@@ -12,7 +12,7 @@ class ProxyDict:
     Example proxy server text file contained in Examples package.
     """
 
-    def __init__(self, proxy_file_name):
+    def __init__(self, proxy_file_name: str) -> None:
 
         """
         args...
@@ -39,7 +39,7 @@ class ProxyDict:
             proxy_config['methods'] = proxy_config['methods'].split(',')
             self.proxy_config = proxy_config
 
-    def get_dict(self):
+    def get_dict(self) -> dict:
 
         """
         Returns a dictionary containing the proxy data

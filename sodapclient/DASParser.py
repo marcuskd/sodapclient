@@ -2,6 +2,7 @@
 DASParser class definition
 """
 
+from io import TextIOWrapper
 from sodapclient.Parser import Parser
 from sodapclient.Definitions import Definitions
 
@@ -12,12 +13,12 @@ class DASParser(Parser):
     DASParser class. Extracts and stores the attributes within a DAS string.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
 
         super().__init__()
         self.dtype = 'Dataset Attribute Structure (DAS)'
 
-    def parse(self, das_str):
+    def parse(self, das_str: str) -> None:
 
         """
         Parse the DAS.
@@ -42,7 +43,7 @@ class DASParser(Parser):
                     attr_data.append(self.data_lines[self.lnum].lstrip()[:-1])
                 self.data[attr_name] = attr_data
 
-    def print_das(self, das=None):
+    def print_das(self, das: dict=None) -> None:
 
         """
         Print the DAS to the console. DAS can be passed in externally for convenience.
@@ -60,22 +61,22 @@ class DASParser(Parser):
                 print(l)
             print()
 
-    def print_das_to_file(self, file_name, das=None):
+    def print_das_to_file(self, file: TextIOWrapper, das: dict=None) -> None:
 
         """
         Print the DAS to a file. DAS can be passed in externally for convenience.
         args...
-            file_name: file name (string)
+            file: file object
         kwargs...
             das: DAS (dictionary)
         """
 
         if das is None:
             das = self.data
-        self.print_data_to_file(self.dtype, das, file_name)
+        self.print_data_to_file(self.dtype, das, file)
         for var in das.keys():
-            file_name.write('Variable : ' + var + '\n')
-            file_name.write('Attributes...\n')
+            file.write('Variable : ' + var + '\n')
+            file.write('Attributes...\n')
             for l in das[var]:
-                file_name.write(l + '\n')
-            file_name.write('\n')
+                file.write(l + '\n')
+            file.write('\n')

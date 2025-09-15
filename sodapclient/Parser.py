@@ -2,6 +2,7 @@
 Parser class definition
 """
 
+from io import TextIOWrapper
 
 class Parser:
 
@@ -9,7 +10,7 @@ class Parser:
     Serves as base class for DDSParser and DASParser classes.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
 
         self.dtype = 'Undefined'  # Name of parsed dataset (e.g. DDS, DAS)
         self.data = {}  # data dictionary
@@ -18,7 +19,7 @@ class Parser:
         self.lnum = 0  # Current line number
         self.finished = False  # Flag to indicate parsing complete
 
-    def find_start(self, data_str, start_str):
+    def find_start(self, data_str: str, start_str: str) -> None:
 
         """
         Find the start of a dataset.
@@ -46,7 +47,7 @@ class Parser:
                               (self.data_lines[self.lnum]))
 
     @staticmethod
-    def find_indent_level(line):
+    def find_indent_level(line: str) -> int:
 
         """
         Find the indentation level.
@@ -61,7 +62,7 @@ class Parser:
                 i += 1
         return i
 
-    def check_line(self):
+    def check_line(self) -> bool:
 
         """
         Check whether to process a line.
@@ -84,7 +85,7 @@ class Parser:
         return do_line
 
     @staticmethod
-    def print_data(dtype, data):
+    def print_data(dtype: str, data: dict) -> None:
 
         """
         Print data type and data (these can be passed in externally for convenience).
@@ -98,7 +99,7 @@ class Parser:
             print('Structure is not defined')
 
     @staticmethod
-    def print_data_to_file(dtype, data, file):
+    def print_data_to_file(dtype: str, data: dict, file: TextIOWrapper) -> None:
 
         """
         Print data type and data to a file (these can be passed in externally for convenience).

@@ -5,37 +5,43 @@ To run this example at the command line enter: python3 Example.py
 
 import numpy
 
-from sodapclient import Handler
+from sodapclient.Handler import Handler
 
-# Define the URL (one of the datasets available at the official
-# OpenDAP test server):
-url = 'http://test.opendap.org/opendap/hyrax/data/nc/sst.mnmean.nc.gz.html'
+def run_example():
 
-# Initialise handler, which will also get the DDS & DAS
-handler = Handler(url, proxy_file_name='proxyserver.txt')
+    # Define the URL (one of the datasets available at the official
+    # OpenDAP test server):
+    url = 'http://test.opendap.org/opendap/hyrax/data/nc/sst.mnmean.nc.gz.html'
 
-# We'll access the SST data over the last 2 times, the last 3 lats and the
-# last 4 longs available...
+    # Initialise handler, which will also get the DDS & DAS
+    handler = Handler(url, proxy_file_name='proxyserver.txt')
 
-# Set up the arrays for the required dimensions, shape 1x3 for map variables
-# and nx3 for data variables with n dimensions
-time_dims = numpy.array([[1800, 10, 1810]])  # Time indices 1800 and 1810
-lat_dims = numpy.array([[70, 2, 74]])  # Latitude indices 70, 72 and 74
-lon_dims = numpy.array([[80, 1, 83]])  # Longitude indices 80 to 83
-sst_dims = numpy.array([time_dims[0], lat_dims[0], lon_dims[0]])
+    # We'll access the SST data over the last 2 times, the last 3 lats and the
+    # last 4 longs available...
 
-byte_order = '>'  # Big Endian
+    # Set up the arrays for the required dimensions, shape 1x3 for map variables
+    # and nx3 for data variables with n dimensions
+    time_dims = numpy.array([[1800, 10, 1810]])  # Time indices 1800 and 1810
+    lat_dims = numpy.array([[70, 2, 74]])  # Latitude indices 70, 72 and 74
+    lon_dims = numpy.array([[80, 1, 83]])  # Longitude indices 80 to 83
+    sst_dims = numpy.array([time_dims[0], lat_dims[0], lon_dims[0]])
 
-# Get the data and the dimension variables
+    byte_order = '>'  # Big Endian
 
-handler.get_variable('time', time_dims, byte_order)
-handler.get_variable('lat', lat_dims, byte_order)
-handler.get_variable('lon', lon_dims, byte_order)
-handler.get_variable('sst', sst_dims, byte_order)
+    # Get the data and the dimension variables
 
-handler.print()  # Print the DDS, DAS and data to screen
+    handler.get_variable('time', time_dims, byte_order)
+    handler.get_variable('lat', lat_dims, byte_order)
+    handler.get_variable('lon', lon_dims, byte_order)
+    handler.get_variable('sst', sst_dims, byte_order)
 
-# Then get access to any variable from the handler's variables dictionary, e.g.
+    handler.print()  # Print the DDS, DAS and data to screen
 
-sst = handler.variables['sst']
-print('\nSST...\n', sst)
+    # Then get access to any variable from the handler's variables dictionary, e.g.
+
+    sst = handler.variables['sst']
+    print('\nSST...\n', sst)
+
+
+if __name__ == '__main__':
+    run_example()

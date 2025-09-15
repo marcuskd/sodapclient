@@ -13,7 +13,7 @@ class VariableLoader:
     as a NumPy array.
     """
 
-    def __init__(self, url, dataset_name, dds):
+    def __init__(self, url: str, dataset_name: str, dds: dict) -> None:
 
         """
         args...
@@ -27,7 +27,7 @@ class VariableLoader:
         self.dataset_name = dataset_name
         self.dds = dds
 
-    def get_request_url(self, var_name, dim_sels):
+    def get_request_url(self, var_name: str, dim_sels: numpy.ndarray) -> str:
 
         """
         Returns the URL for a request.
@@ -42,18 +42,18 @@ class VariableLoader:
 
         if var_name not in self.dds:
             print('VariableLoader: Requested variable not in DDS, stopping.')
-            return None
+            return ''
 
         var_dims = self.dds[var_name][1]
         num_dims = len(var_dims)
         if (num_dims > 0) and (dim_sels.shape[0] != num_dims):
             print('VariableLoader: Requested number of dimensions incorrect, stopping.')
-            return None
+            return ''
 
         dims_ok = self.check_dim_sels(var_dims, dim_sels, num_dims)
         if not dims_ok:
             print('VariableLoader: At least one dimension selection request is not valid, stopping.')
-            return None
+            return ''
 
         # Construct the request url (replace square brackets with hex codes as needed by some servers)
 
@@ -67,7 +67,7 @@ class VariableLoader:
         return requrl
 
     @staticmethod
-    def check_dim_sels(var_dims, dim_sels, num_dims):
+    def check_dim_sels(var_dims: list, dim_sels: numpy.ndarray, num_dims: int) -> bool:
 
         """
         Extract dimension selections and check they're valid.
@@ -93,8 +93,7 @@ class VariableLoader:
 
         return dims_ok
 
-    def load_variable(self, var_name, var_data, dim_sels, byte_ord_str,
-                      check_type=True):
+    def load_variable(self, var_name: str, var_data: bytes, dim_sels: numpy.ndarray, byte_ord_str: str, check_type: bool=True) -> numpy.ndarray:
 
         """
         Load the requested variable and return as a NumPy array.
@@ -128,12 +127,14 @@ class VariableLoader:
         id_len = len(data_id)
         data_len = len(var_data)
 
+        null_ret = numpy.empty(0)
+
         i = 0
         while (i < data_len - id_len - 1) and (var_data[i:i + id_len] != data_id):
             i += 1
         if var_data[i:i + id_len] != data_id:
             print('VariableLoader: Data start identifier not found, stopping.')
-            return None
+            return null_ret
 
         data_start_ind = i + id_len
         data_start_ind += boffs
@@ -143,7 +144,7 @@ class VariableLoader:
         var_type = self.dds[var_name][0]
         if check_type and (var_type not in hdr_str):
             print('VariableLoader: Variable type in requested data header does not match DDS, stopping.')
-            return None
+            return null_ret
 
         #  Check the var_data byte stream contains the correct
         # variable dimensions
@@ -156,7 +157,7 @@ class VariableLoader:
 
         if dim_str not in hdr_str:
             print('VariableLoader: Variable dimensions in requested data header do not match DDS, stopping.')
-            return None
+            return null_ret
 
         # All OK - load the variable
 
@@ -174,7 +175,7 @@ class VariableLoader:
 
         return var
 
-    def get_dim_str(self, dim_sels, var_name):
+    def get_dim_str(self, dim_sels: numpy.ndarray, var_name: str) -> tuple:
 
         """
         Get the dimension selection string and number of elements.

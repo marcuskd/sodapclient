@@ -7,6 +7,8 @@ from urllib.parse import urlparse as upar
 
 from datetime import datetime
 
+import numpy
+
 from sodapclient.ProxyDict import ProxyDict
 from sodapclient.DDSParser import DDSParser
 from sodapclient.DASParser import DASParser
@@ -39,7 +41,7 @@ class Handler:
         log: Creates log file on True
     """
 
-    def __init__(self, url, proxy_file_name=None, credentials=None, log=False):
+    def __init__(self, url: str, proxy_file_name: str=None, credentials: dict=None, log: bool=False) -> None:
 
         """
         args...
@@ -97,7 +99,7 @@ class Handler:
         # Set up the (initially empty) variables dictionary
         self.variables = {}  # Dictionary to hold loaded variables
 
-    def __del__(self):
+    def __del__(self) -> None:
 
         """
         Close the log file when the handler is deleted.
@@ -108,7 +110,7 @@ class Handler:
                                 str(datetime.now()) + '\n\n')
             self.log_file.close()
 
-    def set_up_proxy(self):
+    def set_up_proxy(self) -> None:
 
         """
         Set up the proxy.
@@ -118,7 +120,7 @@ class Handler:
         opener = ureq.build_opener(proxy_handler)
         ureq.install_opener(opener)
 
-    def set_credentials(self):
+    def set_credentials(self) -> None:
 
         """
         Set up credentials.
@@ -131,7 +133,7 @@ class Handler:
         opener = ureq.build_opener(auth_handler)
         ureq.install_opener(opener)
 
-    def get_dds(self):
+    def get_dds(self) -> None:
 
         """
         Get the Dataset Descriptor Structure (DDS).
@@ -153,7 +155,7 @@ class Handler:
             self.log_file.write('\n--- dds ---\n\n')
             dds_parser.print_dds_to_file(self.log_file)
 
-    def get_das(self):
+    def get_das(self) -> None:
 
         """
         Get the Dataset Attribute Structure (DAS).
@@ -175,13 +177,13 @@ class Handler:
             das_parser.print_das_to_file(self.log_file, das=None)
             self.log_file.write('-----------\n\n')
 
-    def get_variable(self, var_name, dim_sels, byte_ord_str, check_type=True):
+    def get_variable(self, var_name: str, dim_sels: numpy.ndarray, byte_ord_str: str, check_type: bool=True) -> None:
 
         """
         Get a variable.
         args...
             var_name: variable name
-            dim_sels: dimension selections (see get_request_url)
+            dim_sels: dimension selections (see VariableLoader.get_request_url)
             byte_ord_str: byte order string: '<' for little endian, '>' for big endian
         kwargs...
             check_type: check header string contains expected variable type
@@ -197,7 +199,7 @@ class Handler:
             if var is not None:
                 self.variables[var_name] = var
 
-    def print_status(self):
+    def print_status(self) -> None:
 
         """
         Print the handler status to the console.
@@ -212,7 +214,7 @@ class Handler:
         psr = DASParser()  # Temporary object - just need printing function
         psr.print_das(self.das)  # Convenience instantiation just to print dds
 
-    def print(self):
+    def print(self) -> None:
 
         """
         Print the handler status and available variables.

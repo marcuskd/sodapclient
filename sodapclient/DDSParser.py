@@ -2,6 +2,7 @@
 DDSParser class definition
 """
 
+from io import TextIOWrapper
 from sodapclient.Parser import Parser
 from sodapclient.Definitions import Definitions
 
@@ -24,7 +25,7 @@ class DDSParser(Parser):
     only the first will be included.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
 
         super().__init__()
         self.dtype = 'Dataset Descriptor Structure (DDS)'
@@ -34,7 +35,7 @@ class DDSParser(Parser):
 
         self.dataset_name = 'Undefined'
 
-    def parse(self, dds_str):
+    def parse(self, dds_str: str) -> None:
 
         """
         Parse the DDS.
@@ -55,7 +56,7 @@ class DDSParser(Parser):
             # Exclude trailing semicolon...
             self.dataset_name = self.data_lines[self.lnum].split()[-1][:-1]
 
-    def process_line(self):
+    def process_line(self) -> None:
 
         """
         Process a line.
@@ -76,7 +77,7 @@ class DDSParser(Parser):
                     self.read_constructor(next_line, var_type)
                     break
 
-    def read_atomic(self, line, var_type):
+    def read_atomic(self, line: str, var_type: str) -> None:
 
         """
         Read an atomic variable.
@@ -100,7 +101,7 @@ class DDSParser(Parser):
             dims[idim] = int(segs[idim + 1].split(']')[0])
         self.data[var_name] = [var_type, dims, assoc_names]
 
-    def read_constructor(self, line, var_type):
+    def read_constructor(self, line: str, var_type: str) -> None:
 
         """
         Reading constructor variables not implemented
@@ -109,7 +110,7 @@ class DDSParser(Parser):
 
         pass
 
-    def print_dds(self, dataset_name=None, dds=None):
+    def print_dds(self, dataset_name: str=None, dds: dict=None) -> None:
 
         """
         Print the DDS to the console. Dataset name and DDS
@@ -131,7 +132,7 @@ class DDSParser(Parser):
             print('Dimensions :', dds[var][1])
             print('Associated names :', dds[var][2], '\n')
 
-    def print_dds_to_file(self, file_name, dataset_name=None, dds=None):
+    def print_dds_to_file(self, file: TextIOWrapper, dataset_name: str=None, dds: dict=None) -> None:
 
         """
         Print the DDS to a file. Dataset name and DDS
@@ -147,10 +148,10 @@ class DDSParser(Parser):
             dataset_name = self.dataset_name
         if dds is None:
             dds = self.data
-        self.print_data_to_file(self.dtype, dds, file_name)
-        file_name.write('Dataset name : ' + dataset_name + '\n\n')
+        self.print_data_to_file(self.dtype, dds, file)
+        file.write('Dataset name : ' + dataset_name + '\n\n')
         for var in dds.keys():
-            file_name.write('Variable name : ' + var + '\n')
-            file_name.write('dtype : ' + dds[var][0] + '\n')
-            file_name.write('Dimensions : ' + str(dds[var][1]) + '\n')
-            file_name.write('Associated names : ' + str(dds[var][2]) + '\n\n')
+            file.write('Variable name : ' + var + '\n')
+            file.write('dtype : ' + dds[var][0] + '\n')
+            file.write('Dimensions : ' + str(dds[var][1]) + '\n')
+            file.write('Associated names : ' + str(dds[var][2]) + '\n\n')
